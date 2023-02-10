@@ -2,7 +2,7 @@ import os
 import time
 
 from homeworks.solution_0 import LenSolution
-from homeworks.solution_1 import FastSolution, RecursionSolution
+from homeworks.solution_1 import FastSolution
 
 
 class CheckHomework:
