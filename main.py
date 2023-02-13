@@ -1,6 +1,7 @@
 import os
 import time
 
+from homeworks import Solution
 from homeworks.solution_0 import LenSolution
 from homeworks.solution_1 import FastSolution
 
@@ -16,17 +17,19 @@ class CheckHomework:
     def __init__(self, num):
         self.homework, _solution = self.homeworks[num]
         self.path = os.path.join(self.ROOT, self.homework)
-        self.solution = self._calculate_elapsed_time(_solution)
+        self.solution: Solution = _solution
 
     def run(self):
-        print(f'{self.homework} result:')
+        print(f'{self.homework} - {self.solution.__name__}result:')
         for root, dirs, files in os.walk(self.path):
             test_files = self._get_task_files(files)
             for data_file, test_data, expected_answer in self._get_test_data(root, test_files):
-                answer, elapsed_time = self.solution(test_data)
+                answer, prepared_expected_answer, elapsed_time  = \
+                    self._calculate_elapsed_time(self.solution)(test_data, expected_answer)
 
-                result = "OK" if str(answer) == expected_answer else "NOK"
-                print(f'{data_file + ":"}  {result:>10} {elapsed_time:>20} {answer:>30} = {expected_answer}')
+                result = "OK" if answer == (prepared_expected_answer or expected_answer) else "NOK"
+                print(f'{data_file + ":"}  {result:>10} {elapsed_time:>20} '
+                      f'{answer:>30} = {prepared_expected_answer}')
 
     def _get_task_files(self, files):
         in_files = self._sort_file([file for file in files if file.endswith('in')])
@@ -40,24 +43,24 @@ class CheckHomework:
             data_file_path = os.path.join(root, data_file)
             answer_file_path = os.path.join(root, answer_file)
             with open(data_file_path) as data_, open(answer_file_path) as answer_:
-                expected_answer = answer_.read().strip('\n')
-                test_data = data_.read().strip('\n')
+                expected_answer = [line.strip('\n') for line in answer_.readlines()]
+                test_data = [line.strip('\n') for line in data_.readlines()]
                 yield data_file, test_data, expected_answer
 
     @staticmethod
     def _sort_key(file):
-        return file.split('.')[1]
+        return int(file.split('.')[1])
 
     def _sort_file(self, files: list):
         return sorted(files, key=self._sort_key)
 
     @classmethod
     def _calculate_elapsed_time(cls, func):
-        def __calculate_elapsed_time(data):
+        def __calculate_elapsed_time(data, answer):
             bt = time.monotonic()
-            result = func(data)()
+            result = func(data, answer)()
             _elapsed_time = time.monotonic() - bt
-            return result, round(_elapsed_time, 4)
+            return *result, round(_elapsed_time, 4)
 
         return __calculate_elapsed_time
 

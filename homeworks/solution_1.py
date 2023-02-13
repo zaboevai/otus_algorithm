@@ -1,13 +1,16 @@
 import math
 
-
-class Solution2:
-
-    def __init__(self, data: str):
-        self.data = int(data)
+from homeworks import Solution
 
 
-class RecursionSolution(Solution2):
+class Solution_1(Solution):
+
+    def __init__(self, data, answer):
+        super(Solution_1, self).__init__(data, answer)
+        self.data: list[int] = [int(data) for data in self.data]
+
+
+class RecursionSolution(Solution_1):
     counter = 0
 
     def _run(self, remaining_digits: int, sum_a: int, sum_b: int):
@@ -18,15 +21,19 @@ class RecursionSolution(Solution2):
 
         for a in range(10):
             for b in range(10):
-                counter = self._run(remaining_digits - 1, sum_a + a, sum_b + b)
+                self._run(remaining_digits - 1, sum_a + a, sum_b + b)
         return RecursionSolution.counter
 
     def __call__(self):
         RecursionSolution.counter = 0
-        return self._run(self.data, 0, 0)
+        return self._run(self.data[0], 0, 0), self.answer
 
 
-class FastSolution(Solution2):
+class FastSolution(Solution_1):
+
+    def __init__(self, data, answer):
+        super(FastSolution, self).__init__(data, answer)
+        self.answer = int(self.answer[0])
 
     @classmethod
     def get_next_array(cls, prev_arr):
@@ -49,7 +56,7 @@ class FastSolution(Solution2):
 
         for j in arr:
             result.append(int(math.pow(j, 2)))
-        return sum(result)
+        return sum(result), self.answer
 
     def __call__(self):
-        return self._run(self.data)
+        return self._run(*self.data)
