@@ -8,5 +8,8 @@ class LenSolution(Solution):
         self.answer = int(self.answer[0])
         self.data = str(self.data[0])
 
+    def _run(self):
+        return len(self.data)
+
     def __call__(self, ):
-        return len(self.data), self.answer
+        return str(self._run()), str(self.answer)

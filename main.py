@@ -1,35 +1,34 @@
 import os
 import time
 
-from homeworks import Solution
 from homeworks.solution_0 import LenSolution
-from homeworks.solution_1 import FastSolution
+from homeworks.solution_1 import *
+from homeworks.solution_2 import *
+from homeworks.solution_3 import *
+from homeworks.solution_4 import *
+from homeworks.solution_5 import *
 
 
 class CheckHomework:
     ROOT = 'homeworks'
     homeworks = []
 
-    @classmethod
-    def set_homeworks(cls, homeworks_):
-        cls.homeworks = homeworks_
-
-    def __init__(self, num):
-        self.homework, _solution = self.homeworks[num]
+    def __init__(self, homework):
+        self.homework, _solution = homework
         self.path = os.path.join(self.ROOT, self.homework)
         self.solution: Solution = _solution
 
-    def run(self):
-        print(f'{self.homework} - {self.solution.__name__}result:')
+    def run(self, show_results=False):
+        print(f'{self.homework} - {self.solution.__name__!r} result:')
         for root, dirs, files in os.walk(self.path):
             test_files = self._get_task_files(files)
             for data_file, test_data, expected_answer in self._get_test_data(root, test_files):
-                answer, prepared_expected_answer, elapsed_time  = \
+                answer, prepared_expected_answer, elapsed_time = \
                     self._calculate_elapsed_time(self.solution)(test_data, expected_answer)
 
                 result = "OK" if answer == (prepared_expected_answer or expected_answer) else "NOK"
-                print(f'{data_file + ":"}  {result:>10} {elapsed_time:>20} '
-                      f'{answer:>30} = {prepared_expected_answer}')
+                results = f'{answer:>30} = {prepared_expected_answer}' if show_results else ''
+                print(f'{data_file + ":"}  {result:>10} {elapsed_time:>20} {results}')
 
     def _get_task_files(self, files):
         in_files = self._sort_file([file for file in files if file.endswith('in')])
@@ -68,9 +67,25 @@ class CheckHomework:
 if __name__ == '__main__':
     homeworks = [
         ('0.String', LenSolution),
+        # ('1.Tickets', RecursionSolution),
         ('1.Tickets', FastSolution),
+        # ('2.GCD', EvklidSubtraction),
+        ('2.GCD', EvklidRemains),
+        # ('2.GCD', StainAlgorithm),  # не понял алгоритм
+        ('3.Power', IterateSolution),
+        # ('3.Power', Power2Solution),
+        ('3.Power', BinSolution),
+        # ('4.Fibo', RecursionSolutionFibo),
+        # ('4.Fibo', IterationSolutionFibo),
+        ('4.Fibo', PhiSolutionFibo),
+        # ('5.Primes', IterationSolutionPrimes1),
+        # ('5.Primes', IterationSolutionPrimes2),
+        # ('5.Primes', IterationSolutionPrimes3),
+        ('5.Primes', IterationSolutionPrimes4),
     ]
-    CheckHomework.set_homeworks(homeworks)
 
-    homework_num = 0
-    CheckHomework(num=homework_num).run()
+    homework_num = 4
+    CheckHomework(homework=homeworks[homework_num]).run(show_results=True)
+
+    # for homework in homeworks:
+    #     CheckHomework(homework=homework).run(show_results=False)

@@ -26,7 +26,7 @@ class RecursionSolution(Solution_1):
 
     def __call__(self):
         RecursionSolution.counter = 0
-        return self._run(self.data[0], 0, 0), self.answer
+        return str(self._run(self.data[0], 0, 0)), str(self.answer[0])
 
 
 class FastSolution(Solution_1):
@@ -56,7 +56,7 @@ class FastSolution(Solution_1):
 
         for j in arr:
             result.append(int(math.pow(j, 2)))
-        return sum(result), self.answer
+        return sum(result)
 
     def __call__(self):
-        return self._run(*self.data)
+        return str(self._run(*self.data)), str(self.answer)
