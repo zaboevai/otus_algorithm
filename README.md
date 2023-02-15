@@ -12,10 +12,9 @@ RUN  `python main.py`
         ('0.String', LenSolution),
         ('1.Tickets', FastSolution),
     ]
-    CheckHomework.set_homeworks(homeworks)
 
     homework_num = 0
-    CheckHomework(num=homework_num).run()
+    CheckHomework(homework=homeworks[homework_num]).run(show_results=True)
 
 Результат:
 
